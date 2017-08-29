@@ -33,7 +33,7 @@ export default class CacheWriter {
     if (localCache) {
       try {
         localCache = JSON.parse(localCache);
-        this.cache = CacheRecordStore.fromJSON(localCache);
+        this.cache.updateFromJSON(localCache);
       } catch (err) {
         console.error('Could not update cache from JSON', err);
       }

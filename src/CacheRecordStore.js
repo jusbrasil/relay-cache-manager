@@ -127,20 +127,17 @@ export default class CacheRecordStore {
   }
 
   /**
-   * Takes an object that represents a partially
-   * deserialized instance of CacheRecordStore
-   * and creates a new instance from it. This is required
-   * so that __range__ values can be correctly restored.
+   * Takes an object that represents a previously deserialized
+   * instance of CacheRecordStore and update the current instance
    */
-  static fromJSON({ records, rootCallMap }) {
-    for (var key in records) {
-      const record = records[key];
-      const range = record.__range__;
-      if (range) {
-        record.__range__ = GraphQLRange.fromJSON(range)
-      }
-     }
-    return new CacheRecordStore(records, rootCallMap);
+  updateFromJSON({
+    records,
+    rootCallMap,
+  } : {
+    records: CacheRecordMap,
+    rootCallMap: CacheRootCallMap
+  }) {
+    Object.assign(this.records, records);
+    Object.assign(this.rootCallMap, rootCallMap);
   }
-
 }
