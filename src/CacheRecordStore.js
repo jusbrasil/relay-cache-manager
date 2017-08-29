@@ -4,7 +4,7 @@
  * @flow
  */
 
-import GraphQLRange from 'react-relay/lib/GraphQLRange'
+import GraphQLRange from 'react-relay/lib/GraphQLRange';
 
 
 /**
@@ -55,8 +55,13 @@ export type CacheRootCallMap = {
   [root: string]: string,
 }
 
+type CacheInstance = {
+  records: CacheRecordMap,
+  rootCallMap: CacheRootCallMap
+}
+
 export const serializeRangesInRecord = (record: CacheRecord): CacheRecord => {
-  const range = record.__range__;
+  const range = record.__range__; // eslint-disable-line no-underscore-dangle
   return {
     ...record,
     __range__: range && !Array.isArray(range)
@@ -66,7 +71,7 @@ export const serializeRangesInRecord = (record: CacheRecord): CacheRecord => {
 };
 
 export const deserializeRangesInRecord = (record: CacheRecord): CacheRecord => {
-  const range = record.__range__;
+  const range = record.__range__; // eslint-disable-line no-underscore-dangle
   return {
     ...record,
     __range__: range && Array.isArray(range)
@@ -91,7 +96,7 @@ export default class CacheRecordStore {
     identifyingArgValue: string,
     dataId: string
   ) {
-    this.rootCallMap[storageKey] = dataId;
+    this.rootCallMap[`${storageKey}${identifyingArgValue}`] = dataId;
   }
 
   writeRecord(
@@ -105,38 +110,29 @@ export default class CacheRecordStore {
     callName: string,
     callValue: string
   ): ?string {
-    return this.rootCallMap[callName];
+    return this.rootCallMap[`${callName}${callValue}`];
   }
 
   readNode(dataID: string): ?CacheRecord {
     return this.records[dataID] || null;
   }
 
-  toJSON(): {
-    records: CacheRecordMap,
-    rootCallMap: CacheRootCallMap
-  } {
+  toJSON(): CacheInstance {
     const records = {};
     Object.keys(this.records).forEach(key => {
-      records[key] = serializeRangesInRecord(this.records[key])
+      records[key] = serializeRangesInRecord(this.records[key]);
     });
     return {
       records,
       rootCallMap: this.rootCallMap,
-    }
+    };
   }
 
   /**
    * Takes an object that represents a previously deserialized
    * instance of CacheRecordStore and update the current instance
    */
-  updateFromJSON({
-    records,
-    rootCallMap,
-  } : {
-    records: CacheRecordMap,
-    rootCallMap: CacheRootCallMap
-  }) {
+  updateFromJSON({ records, rootCallMap }: CacheInstance) {
     Object.assign(this.records, records);
     Object.assign(this.rootCallMap, rootCallMap);
   }

@@ -1,0 +1,19 @@
+{
+  "extends": "airbnb",
+  "parser": "babel-eslint",
+  "plugins": ["flowtype"],
+  "env": {
+    "browser": true
+  },
+  "rules": {
+    "comma-dangle": ["error", {
+      "arrays": "always",
+      "objects": "only-multiline",
+      "imports": "only-multiline",
+      "exports": "only-multiline",
+      "functions": "never"
+    }],
+    arrow-parens: ["error", "as-needed"]
+  }
+}
+
