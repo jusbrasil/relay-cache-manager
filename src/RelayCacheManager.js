@@ -5,32 +5,29 @@
  */
 
 import CacheWriter from './CacheWriter';
-
-type RelayCacheManagerOptions = {
-  cacheKey?: string,
-}
+import type { CacheWriterOptions } from './CacheWriter';
 
 export default class RelayCacheManager {
   cacheWriter: CacheWriter;
-  constructor(options: RelayCacheManagerOptions) {
+  constructor(options: CacheWriterOptions) {
     this.cacheWriter = new CacheWriter(options);
   }
 
   clear() {
     this.cacheWriter.clearStorage();
-  };
+  }
 
   getMutationWriter(): CacheWriter {
     return this.cacheWriter;
-  };
+  }
 
   getQueryWriter(): CacheWriter {
     return this.cacheWriter;
-  };
+  }
 
   getAllRecords() {
     return this.cacheWriter.cache.records;
-  };
+  }
 
   readNode(
     id: string,
@@ -38,7 +35,7 @@ export default class RelayCacheManager {
   ) {
     const node = this.cacheWriter.readNode(id);
     setImmediate(callback.bind(null, null, node));
-  };
+  }
 
   readRootCall(
     callName: string,

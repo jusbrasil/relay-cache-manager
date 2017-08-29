@@ -112,6 +112,20 @@ export default class CacheRecordStore {
     return this.records[dataID] || null;
   }
 
+  toJSON(): {
+    records: CacheRecordMap,
+    rootCallMap: CacheRootCallMap
+  } {
+    const records = {};
+    Object.keys(this.records).forEach(key => {
+      records[key] = serializeRangesInRecord(this.records[key])
+    });
+    return {
+      records,
+      rootCallMap: this.rootCallMap,
+    }
+  }
+
   /**
    * Takes an object that represents a partially
    * deserialized instance of CacheRecordStore
