@@ -5,7 +5,10 @@
  *  @flow
  */
 
-import CacheRecordStore from './CacheRecordStore';
+import CacheRecordStore, {
+  serializeRangesInRecord,
+  deserializeRangesInRecord,
+} from './CacheRecordStore';
 import type { CacheRecord } from './CacheRecordStore';
 
 const DEFAULT_CACHE_KEY: string = '__RelayCacheManager__';
@@ -61,12 +64,12 @@ export default class CacheWriter {
   }
 
   writeNode(dataId: string, record: CacheRecord) {
-    this.cache.writeRecord(dataId, record);
+    this.cache.writeRecord(dataId, serializeRangesInRecord(record));
   }
 
   readNode(dataId: string) {
-    const record = this.cache.readNode(dataId)
-    return record;
+    const record = this.cache.readNode(dataId);
+    return record && deserializeRangesInRecord(record);
   }
 
   writeRootCall(

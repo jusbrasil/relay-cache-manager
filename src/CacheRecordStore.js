@@ -55,6 +55,26 @@ export type CacheRootCallMap = {
   [root: string]: string,
 }
 
+export const serializeRangesInRecord = (record: CacheRecord): CacheRecord => {
+  const range = record.__range__;
+  return {
+    ...record,
+    __range__: range && !Array.isArray(range)
+      ? range.toJSON()
+      : range,
+  };
+};
+
+export const deserializeRangesInRecord = (record: CacheRecord): CacheRecord => {
+  const range = record.__range__;
+  return {
+    ...record,
+    __range__: range && Array.isArray(range)
+      ? GraphQLRange.fromJSON(range)
+      : range,
+  };
+};
+
 export default class CacheRecordStore {
   records: CacheRecordMap;
   rootCallMap: CacheRootCallMap;
@@ -62,8 +82,8 @@ export default class CacheRecordStore {
     records?: CacheRecordMap,
     rootCallMap?: CacheRootCallMap
   ) {
-    this.records = records || {}
-    this.rootCallMap = rootCallMap || {}
+    this.records = records || {};
+    this.rootCallMap = rootCallMap || {};
   }
 
   writeRootCall(
